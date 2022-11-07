@@ -9,10 +9,13 @@ function getScheduleOfTrainer(trainerId, startDt, endDt) {
 }   
 
 // 에약하기
-function reservation(trainerId, reservationDates) {
-  //Long trainerId, List reservationDates<LocalDate date, int time>
-
-  return authRequest.post('/api/v1/reservations', {trainerId, reservationDates})
+function reservation(trainerId, dateTime) {
+  return authRequest.post('/api/v1/reservations', {trainerId, dateTime})
 }
 
-export { getScheduleOfTrainer, reservation }
+// 예약취소
+function cancel(reservationId) {
+  return authRequest.post(`/api/v1/reservations/${reservationId}`)
+}
+
+export { getScheduleOfTrainer, reservation, cancel}

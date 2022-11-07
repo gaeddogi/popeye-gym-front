@@ -14,22 +14,24 @@
 
     <div>남은 수량: {{ quantity }}</div>
 
-    <!-- :weeks="weeks"
-    :times="times" -->
+
+    <!-- @click-reservation="handleReservation" -->
     <ReservationView
       @click-week="handleChangeWeek"
-      @click-td="handleSelectedDate"
-      @click-reservation="handleReservation"
+      @click-td="handleReservation"
+
       :times="times"
       :currentDates="datesOfCurrentWeek"
-      :scheduledDates="scheduledDatesOfCurrentTrainer"
-      :selectedTds="selectedTdsOfWeeks[`${currentWeekIdx}`]"
+      :scheduleDetails="scheduleDetailsOfCurrentTrainer"
+      :selectedTds="selectedTds"
       :weekIdx="currentWeekIdx"
+      :disabledTds="disabledTds"
     >
     <!-- :quantity="quantity" -->
 
 
     </ReservationView>
+
 
   </div>
 </template>
@@ -38,7 +40,7 @@
 import dayjs from "dayjs"
 import ReservationView from './ReservationView.vue'
 import { getPtInfo } from '@/api/pt'
-import { getScheduleOfTrainer, reservation } from '@/api/reservation.js'
+import { getScheduleOfTrainer, reservation, cancel } from '@/api/reservation.js'
 
 export default {
   components: {
@@ -53,10 +55,14 @@ export default {
       trainers: [], // [ {trainerId: , name: }, {}, ... ]
       quantity: 0,
 
+      disabledTds: {},
+      selectedTds: {},
+
       currentTrainerIdx: 0,
       currentTrainerId: 0,
-      scheduledDatesOfCurrentTrainer: [], // [ { date: , time: }, {}, ..]
+      scheduleDetailsOfCurrentTrainer: [], // [ { date: , time: , isMine: }, {}, ..]
       currentWeekIdx: 0,
+      dates: [],
 
       selectedTdsOfWeeks: {0: {}, 1: {}, 2: {}, 3: {}} // { 0: {}, 1: {}, 2: {}, 3: {} }
       // selectedTdsOfWeeks: [{0: {}, 1: {}, 2: {}, 3: {}}]// { 0: {}, 1: {}, 2: {}, 3: {} }
@@ -73,9 +79,7 @@ export default {
     this.currentTrainerId = this.trainers[0].trainerId
     this.quantity = this.trainers[0].quantity
     this.handleChangeWeek(0)
-    // this.clickTrainer(this.trainers[0].trainerId, 0)
 
-    // this.changeTrainer(0)
   },
   methods: {
     setDatesOfWeeks() {
@@ -103,7 +107,7 @@ export default {
     getUserPtInfo() { 
       return getPtInfo()
       .then(res => {
-        // 트레이너별 남은 pt수 또한 가져와야함.
+        console.log("gerUserInfo : ", res)
         this.trainers = res.data;
 
       })
@@ -111,27 +115,98 @@ export default {
         console.log(err);
       })
     },
+    setLastTds() {
+      const dates = this.dates
+      const times = this.times
+      const firstDate = dates[0]
+
+      const now = dayjs()
+      const nowHour = now.get('hour') // 12:18
+      const nowDate = now.format('YY-MM-DD') // 11/3
+      const disabledTds = this.disabledTds // { '0,1': true, '3,3': true ...}
+
+      if (firstDate > now) {
+        console.log('지난 날짜 없음')
+        return disabledTds
+      }
+
+      for (let i = 0; i < 11; i++) {
+        for (let j = 0; j < 7; j++) {
+          let thisTime = times[i] 
+          let thisDate = dates[j].format('YY-MM-DD') 
+
+          if (thisDate < nowDate) {
+            disabledTds[`${i},${j}`] = true
+          }
+          else if (thisDate === nowDate && thisTime <= nowHour) {
+            disabledTds[`${i},${j}`] = true
+          }
+          else {
+            break
+          }
+        }
+      }
+
+      this.disabledTds = disabledTds
+    },
     handleChangeWeek(weekIdx) {
-      console.log(weekIdx)
+      console.log("handleChangeWeek ", weekIdx)
+
+      
 
       // 현재 주 갱신
       this.currentWeekIdx = weekIdx
 
       // 1. 현재 트레이너의 스케줄 가져오기
-      const currentTrainerId = this.currentTrainerId
+      const trainerId = this.currentTrainerId
       const dates = this.datesOfWeeks[weekIdx] // 해당 인덱스 주의 날짜들
       const startDt = dates[0].format('YYYY-MM-DD')
       const endDt = dates[6].format('YYYY-MM-DD')
 
-      getScheduleOfTrainer(currentTrainerId, startDt, endDt)
+      getScheduleOfTrainer(trainerId, startDt, endDt)
       .then(res => {
         console.log(res)
         // {
         //   trainerId: ,
-        //   scheduledDates: [ { date: , time: }, {}, ..],
+        //   scheduleDetails: [ 0: {dateTime: '2022-11-08T13:00:00', mine: true}, 1: {}, ...],
         // }
-        this.scheduledDatesOfCurrentTrainer = res.data.scheduledDates
+        // this.scheduleDetailsOfCurrentTrainer = res.data.scheduleDetails
+        const trainerId = res.data.trainerId
+        const details = res.data.scheduleDetails
+        const selectedTds = {}
+        const disabledTds = {}
+       
+        const dates = this.dates
+        const times = this.times
+
+        for (let key in details) {
+          const detail = details[key]
+          const reservationId = detail['reservationId']
+          const mine = detail['mine']
+          const date = detail['dateTime'].slice(0, 10)
+          const time = detail['dateTime'].slice(11, 13)
+
+          console.log(date, time, mine, reservationId)
+
+          const cIdx = dates.findIndex(o => o.format('YYYY-MM-DD') === date)
+          const rIdx = times.findIndex(t => t == time)
+
+          console.log(rIdx, cIdx)
+
+          if (mine) {
+            selectedTds[`${rIdx},${cIdx}`] = reservationId
+          }
+          else {
+            disabledTds[`${rIdx},${cIdx}`] = true
+          }
+        }
+
         
+        console.log(disabledTds)
+        this.selectedTds = selectedTds
+        this.disabledTds = disabledTds
+        
+        if (weekIdx === 0) this.setLastTds()
       })
       .catch(err => {
         console.log(err)
@@ -139,90 +214,96 @@ export default {
 
       // 2. 직전 주에서 선택한 td들 저장하기
     },
-    handleSelectedDate(selectedTdIdx) {
-      console.log(selectedTdIdx)
-
-      const currentWeekIdx = this.currentWeekIdx
-      const selectedTds = this.selectedTdsOfWeeks[`${currentWeekIdx}`]
-
-      const rIdx = selectedTdIdx.rIdx
-      const cIdx = selectedTdIdx.cIdx
-      const isSelected = selectedTds[`${rIdx},${cIdx}`]
-      const currentDates = this.datesOfCurrentWeek
-      const times = this.times
-      let quantity = this.quantity
-
-      if (isSelected) {
-        delete selectedTds[`${rIdx},${cIdx}`]
-        ++quantity
-      }
-      else {
-        if (quantity <= 0) {
-          alert('남은 PT권이 없어요')
-          return
-        }
-        selectedTds[`${rIdx},${cIdx}`] = {date: currentDates[cIdx-1].format('YYYY-MM-DD'), time: times[rIdx]}
-        --quantity
-      }
-
-      this.selectedTdsOfWeeks[`${currentWeekIdx}`] = selectedTds
-      this.quantity = quantity
-    },
     clickTrainer(trainerId, trainerIdx) {
       console.log(trainerId)
       
       const trainers = this.trainers
       const trainerName = trainers[this.currentTrainerIdx].name
 
-      const flag = confirm(`예약하기 버튼을 누르지 않으면, ${trainerName} 트레이너에 대해 선택한 예약일자가 사라져요`) // 이것의 반환 값에 따라 
 
-      if (flag) {
-        this.currentTrainerId = trainerId
-        this.currentTrainerIdx = trainerIdx
-        this.quantity = this.trainers[trainerIdx].quantity
-        this.selectedTdsOfWeeks = {0: {}, 1: {}, 2: {}, 3: {}}
-        this.handleChangeWeek(0)
-      }
-      else {
-        return
-      }
+      this.currentTrainerId = trainerId
+      this.currentTrainerIdx = trainerIdx
+      this.quantity = this.trainers[trainerIdx].quantity
+      this.selectedTdsOfWeeks = {0: {}, 1: {}, 2: {}, 3: {}}
+      this.handleChangeWeek(0)
+   
 
     },
-    handleReservation() {
+    handleReservation(selectedTdIdx) {
       console.log('예약을 해보자')
+      // Request: Long trainerId, String dateTime (YYYY-MM-DD-HH)
 
-      const currentTrainerId = this.currentTrainerId
-      const selectedTdsOfWeeks = this.selectedTdsOfWeeks // {0: {}, 1: {} 2: {}, 3: {}}
-      const reservationDates = []
+      const cIdx = selectedTdIdx.cIdx
+      const rIdx = selectedTdIdx.rIdx
+
+      const dates = this.dates
+      const times = this.times
       
-      console.log(selectedTdsOfWeeks)
+      const selectedTds = this.selectedTds
+      const reservationId = selectedTds[`${rIdx},${cIdx}`]
 
-      for (const selectedTds in selectedTdsOfWeeks) {
-        for (const td in selectedTdsOfWeeks[selectedTds]) {
+      let quantity = this.quantity
 
-          const obj =selectedTdsOfWeeks[selectedTds][td]
-          let date = obj.date
-          let time = obj.time
-          
-          reservationDates.push({date, time})
-        }
+      if (reservationId) {
+        
+        // 여기서 예약 취소를 한다.
+        console.log('예약취소', reservationId)
+        
+        return cancel(reservationId)
+        .then(res => {
+          console.log(res)
+
+          delete selectedTds[`${rIdx},${cIdx}`]
+          ++quantity
+
+          this.selectedTds = selectedTds
+          this.quantity = quantity
+        })
+        .catch(err => {
+          console.log(err)
+        })
       }
-      console.log(reservationDates)
+      else {
+        if (quantity <= 0) {
+          alert('남은 PT권이 없어요')
+          return
+        }
 
-      return reservation(currentTrainerId, reservationDates)
-      .then(res => {
-        console.log(res)
-      })
-      .catch(err => {
-        console.log(err)
-      })
+        const date = dates[cIdx].format('YYYY-MM-DD')
+        const time = times[rIdx]
+        const dateTime = `${date}-${time}`
+        const trainerId = this.currentTrainerId
+
+        console.log(date, time, dateTime)
+
+        return reservation(trainerId, dateTime)
+        .then(res => {
+          console.log(res)
+          const createdId = res.data.id
+
+          selectedTds[`${rIdx},${cIdx}`] = createdId
+          --quantity
+          
+          this.selectedTds = selectedTds
+          this.quantity = quantity
+        })
+        .catch(err => {
+          console.log(err)
+        })
+
+      }
+
+
+
     }
   },
   computed: {
     datesOfCurrentWeek() {
       const currentWeekIdx = this.currentWeekIdx
+      this.dates = this.datesOfWeeks[currentWeekIdx]
       return this.datesOfWeeks[currentWeekIdx]
     },
+    
 
   }
 }

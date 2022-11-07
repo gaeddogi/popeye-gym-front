@@ -28,16 +28,14 @@
         <tr v-for="(time, rIdx) in times" v-bind:key="rIdx">
           <td>{{ time }}:00</td>
           <td
-            v-for="cIdx in 7" v-bind:key="cIdx" 
+            v-for="(c, cIdx) in 7" v-bind:key="cIdx" 
             @click="clickTd(rIdx, cIdx)" 
-            v-bind:class="{disabled: disabledtds[rIdx][cIdx - 1], selected: selectedTds[`${rIdx},${cIdx}`]}"
+            v-bind:class="{disabled: disabledTds[`${rIdx},${cIdx}`], selected: selectedTds[`${rIdx},${cIdx}`]}"
           ></td>
         </tr>
       </tbody>
     </table>
 
-    <button class="menu-button" @click="clickReservation">예약하기</button>             
-    
   </div>
 
 </template>
@@ -49,23 +47,18 @@ export default {
   data() {
     return {
       weeks: ['이번 주', '다음 주', '2주 후', '3주 후'],
-      // times: [12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22],
-
-      // selectedTds: {}, //[ {rIdx: , cIdx: }, {}, ...]
-      // testTds: {'2,5': true, '7,5': true, '7,6': true}
-
-      // tds: [], // [ {}]
-      testTds: {},
     }
   },
   props: [
     // 'weeks',
     'times',
     'currentDates',
-    'scheduledDates',
+    'scheduleDetails',
     // 'quantity',
     'selectedTds',
-    'weekIdx'
+    'weekIdx',
+
+    'disabledTds',
   ],
   created() {
     console.log('자식 크리에이티드')
@@ -78,103 +71,87 @@ export default {
     clickTd(rIdx, cIdx) {
       console.log(rIdx, cIdx)
       
-      const disabledtds = this.disabledtds
-      const isDisabled = disabledtds[rIdx][cIdx-1]
+      const isDisabled = this.disabledTds[`${rIdx},${cIdx}`]
 
       if (isDisabled) {
         alert('예약불가^^')
         return
       }
-
-      // const quantity = this.quantity
-
-      // if (quantity <= 0) {
-      //   alert('남은 PT권이 없어요')
-      //   return
-      // }
-
-      // const selectedTds = this.selectedTds
-      // const isSelected = selectedTds[`${rIdx},${cIdx}`]
-      // const currentDates = this.currentDates
-      // const times = this.times
-
-      // if (isSelected) {
-      //   delete selectedTds[`${rIdx},${cIdx}`]
-      // }
-      // else {
-      //   selectedTds[`${rIdx},${cIdx}`] = {date: currentDates[cIdx-1], time: times[rIdx]}
-      // }
-      // this.selectedTds = selectedTds
-      // this.$emit('click-td', selectedTds)
-      
       
       this.$emit('click-td', {rIdx, cIdx})
     },
-    clickReservation() {
-      console.log('예약하기')
-
-      this.$emit('click-reservation')
-    }
   },
   computed: {
-    disabledtds() {
-      const currentDates = this.currentDates
-      const times = this.times
-      const scheduledDates = this.scheduledDates // [{date: '2022-11-06', time: 14}, {date: '2022-11-04', time: 20}]
+    // lastTds() {
+    //   const dates = this.currentDates
+    //   const times = this.times
+    //   const firstDate = dates[0]
+
+    //   const now = dayjs().add(3, 'day')
+    //   const nowHour = now.get('hour') // 12:18
+    //   const nowDate = now.format('YY-MM-DD') // 11/3
+    //   const lastTds = {} // { '0,1': true, '3,3': true ...}
+
+    //   if (firstDate > now) {
+    //     console.log('지난 날짜 없음')
+    //     return lastTds
+    //   }
+
+    //   for (let i = 0; i < 11; i++) {
+    //     for (let j = 0; j < 7; j++) {
+    //       let thisTime = times[i] 
+    //       let thisDate = dates[j].format('YY-MM-DD') 
+
+    //       if (thisDate < nowDate) {
+    //         lastTds[`${i},${j}`] = true
+    //       }
+    //       else if (thisDate === nowDate && thisTime <= nowHour) {
+    //         lastTds[`${i},${j}`] = true
+    //       }
+    //       else {
+    //         break
+    //       }
+    //     }
+    //   }
 
 
-      const scheduledTdIdxs = scheduledDates.map(sd => {
-        const cIdx = currentDates.findIndex(cd => cd.format('YYYY-MM-DD') === sd.date)
-        const rIdx = times.findIndex(t => t === sd.time)
-        return {rIdx, cIdx}
-      })
+    //   return lastTds
+    // },
+    // disabled() {
+    //   // alert("disabled")
+    //   const scheduleDetails = this.scheduleDetails // [{date: '2022-11-06', time: 14, isMine: true}, {date: '2022-11-04', time: 20, isMine: false}]
+    //   const currentDates = this.currentDates
+    //   const times = this.times
+    //   const disabledTds = {}
+    //   const selectedTds = 
 
-      console.log(scheduledTdIdxs)
+    //   // const scheduledTdIdxs = scheduleDetails.map(sd => {
+    //   //   const cIdx = currentDates.findIndex(cd => cd.format('YYYY-MM-DD') === sd.date)
+    //   //   const rIdx = times.findIndex(t => t === sd.time)
+    //   //   const mine = sd.mine
+    //   //   return {rIdx, cIdx, mine}
+    //   // })
 
-      const now = dayjs()
-      const nowHour = now.get('hour') // 12:18
-      const nowDate = now.format('YY-MM-DD') // 11/3
-      const lastedTdIdxs = [] // [ {rIdx: , cIdx: }, {}, ...]
+    //   console.log(scheduledTdIdxs)
 
-      for (let i = 0; i < 11; i++) {
-        lastedTdIdxs.push([])
-        for (let j = 0; j < 7; j++) {
-          let thisTime = times[i] 
-          let thisDate = currentDates[j].format('YY-MM-DD') 
-          let disabled = ''
-
-          if (thisDate < nowDate) {
-            disabled = true
-          }
-          else if (thisDate === nowDate && thisTime <= nowHour) {
-            disabled = true
-          }
-          else {
-            disabled = false
-          }
-          lastedTdIdxs[i].push(disabled)
-        }
-      }
-
-      scheduledTdIdxs.forEach(o => {
-        // const disabled = lastedTdIdxs[o.rIdx][o.cIdx];
-        // const obj = Object.assign({}, proxy);
-        // obj.disabled = true;
-        lastedTdIdxs[o.rIdx][o.cIdx] = true
-      })
-
-      // this.tds = tds
-
-      return lastedTdIdxs
-    }
+    //   scheduledTdIdxs.forEach(o => {
+    //     // const disabled = lastedTdIdxs[o.rIdx][o.cIdx];
+    //     // const obj = Object.assign({}, proxy);
+    //     // obj.disabled = true;
+    //     if (o.mine) disabledTds[`${o.rIdx},${o.cIdx}`] = red
+    //     else disabledTds[`${o.rIdx},${o.cIdx}`] = blue
+    //     // lastTds[`${o.rIdx},${o.cIdx}`] = true
+    //   })
+    //   return disabledTds
+    // }
   },
   // watch: {
   //   currentDates(val, oldVal) {
   //     const currentDates = this.currentDates
   //     const times = this.times
-  //     const scheduledDates = this.scheduledDates // [ {date: , time: }, {}, ...]
+  //     const scheduleDetails = this.scheduleDetails // [ {date: , time: }, {}, ...]
 
-  //     const scheduledTdIdxs = scheduledDates.map(sd => {
+  //     const scheduledTdIdxs = scheduleDetails.map(sd => {
   //       const cIdx = currentDates.findIndex(cd => cd.format('YY-MM-DD') === sd.date.format('YY-MM-DD'))
   //       const rIdx = times.findIndex(t => t === sd.time)
   //       return {rIdx, cIdx}
