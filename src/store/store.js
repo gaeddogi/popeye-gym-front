@@ -1,5 +1,7 @@
 import { createStore } from "vuex";
 import { getUserFromCookie, getAuthFromCookie, saveAuthToCookie, saveUserToCookie, deleteCookie } from "@/utils/cookie";
+import { getUser } from "@/api/auth"
+import router from '@/router/index.js';
 
 
 // const storage = {
@@ -17,12 +19,16 @@ import { getUserFromCookie, getAuthFromCookie, saveAuthToCookie, saveUserToCooki
 
 export default createStore({
   state: {
-    id: getUserFromCookie() || '',
+    // id: getUserFromCookie() || '',
     token: getAuthFromCookie() || '',
+    // token: '',
+    user: '',
   },
   getters: {
       isLogin(state) {
-          return state.token !== '';
+          return state.user !== '';
+          // return state.token !== '';
+
       }
   },
   actions: { // dispatch 로 부를 수 있다.
@@ -35,28 +41,46 @@ export default createStore({
       //           callback && callback()
       //         }
       //       )
-      //   }
+      //   },
+      fetchUser({commit}) {
+        getUser()
+        .then(res => {
+          console.log(res)
+          commit('setUser', res.data)
+        })
+        .catch(err => {
+          console.log(err)
+
+          commit('clearToken')
+          commit('clearUser')
+          router.replace('/')
+
+        })
+      }
+
   },
   mutations: {  // commit 으로 부를 수 있다.
-    setId(state, id){
-      state.id = id;
-      saveUserToCookie(id)
-
-      // localStorage.setItem('id', id) // 로컬스토리지에 저장하는게 이시점 맞나?
-    },
+    // setId(state, id){
+    //   state.id = id;
+    //   saveUserToCookie(id)
+    // },
     setToken(state, token){
       state.token = token;
       saveAuthToCookie(token)
-
-      // localStorage.setItem('token', token) // 로컬스토리지에 저장하는게 이시점 맞나?
+    },
+    setUser(state, user){
+      state.user = user;
     },
     clearToken(state) {
       state.token = '';
       deleteCookie('auth');
     },
-    clearId(state) {
-      state.id = '';
-      deleteCookie('user');
+    clearUser(state) {
+      state.user = '';
     },
+    // clearId(state) {
+    //   state.id = '';
+    //   deleteCookie('user');
+    // },
   },
 })

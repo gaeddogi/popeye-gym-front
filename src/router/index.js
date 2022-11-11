@@ -9,16 +9,21 @@ import ReservationListView from "@/views/ReservationListView.vue";
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
+    // {
+    //   path: "/",
+    //   name: "main",
+    //   component: LoginView,
+    // },
     {
       path: "/",
-      name: "login",
-      component: LoginView,
-    },
-    {
-      path: "/main",
       name: "main",
       component: MainView,
     },
+    // {
+    //   path: "/main",
+    //   name: "main",
+    //   component: MainView,
+    // },
     {
       path: "/oauth2/redirect",
       name: "redirect",

@@ -39,19 +39,21 @@ export function setInterceptors(instance) {
       console.log(config)
       if (response.data.code === 'TOKEN_EXPIRED') {
         const accessToken = await getRefreshToken()
-        console.log(typeof(accessToken));
-        if (accessToken) {
+        // console.log(typeof(accessToken));
+        // if (accessToken) {
           // config.headers.Authorization = `Bearer ${store.state.token}`
           // config.headers.Authorization = `Bearer ${accessToken}`
-        }
+        // }
         
-        return instance.request({
-          baseURL: "http://localhost:3000/",
-          headers: {
-            Authorization: `Bearer ${store.state.token}`
-          },
-          url: "/api/v1/pts/trainers"
-        })
+        // return instance.request({
+        //   baseURL: "http://localhost:3000/",
+        //   headers: {
+        //     Authorization: `Bearer ${store.state.token}`
+        //   },
+        //   url: `${config.url}`
+        // })
+        // config.headers['Content-Type'] = 'application/json'
+        return instance.request(config)
       }
       
       if (response.data.code === 'TOKEN_INVALID' || response.data.code === 'REFRESH_TOKEN_EXPIRED') {

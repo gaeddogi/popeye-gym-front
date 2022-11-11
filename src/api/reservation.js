@@ -18,4 +18,9 @@ function cancel(reservationId) {
   return authRequest.post(`/api/v1/reservations/${reservationId}`)
 }
 
-export { getScheduleOfTrainer, reservation, cancel}
+// 예약 리스트
+function getReservations() {
+  return authRequest.get('/api/v1/reservations')
+}
+
+export { getScheduleOfTrainer, reservation, cancel, getReservations }
