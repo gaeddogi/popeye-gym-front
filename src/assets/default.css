@@ -1,12 +1,12 @@
 html {
-	font-family: 'Apple SD Gothic Neo', Roboto, 'Noto Sans KR', NanumGothic, 'Malgun Gothic', sans-serif;
+	/* font-family: 'Apple SD Gothic Neo', Roboto, 'Noto Sans KR', NanumGothic, 'Malgun Gothic', sans-serif; */
 	color: #555;
 	line-height: 1.2;
 	word-wrap: break-word;
 }
 body {
-	/* background: #eee; */
-	background-color: cadetblue;
+	background: #eee;
+	/* background-color: cadetblue; */
 	-webkit-font-smoothing: antialiased;
 }
 html, body, div, span, applet, object, iframe,

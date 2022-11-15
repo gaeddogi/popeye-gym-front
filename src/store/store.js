@@ -20,16 +20,21 @@ import router from '@/router/index.js';
 export default createStore({
   state: {
     // id: getUserFromCookie() || '',
-    token: getAuthFromCookie() || '',
+    // user: getUserFromCookie() || '',
     // token: '',
+    token: getAuthFromCookie() || '',
     user: '',
   },
   getters: {
-      isLogin(state) {
-          return state.user !== '';
-          // return state.token !== '';
+    isLogin(state) {
+        return state.user !== '';
+        // return state.token !== '';
 
-      }
+    },
+    getRole(state) {
+      return state.user.role
+
+  },
   },
   actions: { // dispatch 로 부를 수 있다.
       // fetchUser ({state, commit}, callback) {
@@ -42,8 +47,8 @@ export default createStore({
       //         }
       //       )
       //   },
-      fetchUser({commit}) {
-        getUser()
+      async fetchUser({commit}) {
+        await getUser()
         .then(res => {
           console.log(res)
           commit('setUser', res.data)
@@ -53,7 +58,7 @@ export default createStore({
 
           commit('clearToken')
           commit('clearUser')
-          router.replace('/')
+          router.replace('/login')
 
         })
       }
@@ -70,6 +75,7 @@ export default createStore({
     },
     setUser(state, user){
       state.user = user;
+      // saveUserToCookie(user)
     },
     clearToken(state) {
       state.token = '';

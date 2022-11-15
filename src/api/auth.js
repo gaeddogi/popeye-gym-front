@@ -35,8 +35,8 @@ function check() {
 }
 
 // 유저 정보
-function getUser(success) {
-  return authRequest.get('/api/v1/users', success)
+async function getUser(success) {
+  return await authRequest.get('/api/v1/users', success)
 }
 
 // // 학습 노트 데이터를 생성하는 API

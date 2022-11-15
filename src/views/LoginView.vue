@@ -15,15 +15,15 @@
 <script>
 import { ref } from '@vue/reactivity'
 export default {
-    setup() {
-        const state = ref({
-            form: {
-                email: "",
-                password: ""
-            }
-        })
-        return {state}
-    }
+  setup() {
+    const state = ref({
+      form: {
+        email: "",
+        password: ""
+      }
+    })
+    return {state}
+  }
 }
 </script>
 
