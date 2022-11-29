@@ -1,42 +1,67 @@
 <template>
-  <div>
-    <div class="week-container">
-        <button 
-          v-for="(week, index) in weeks" v-bind:key="index" 
-          @click="clickWeek(index)"
-          :class="{selectedButton: index === weekIdx}"
+  <div class="reservation-container">
+  <!-- <v-container class="d-flex bg-surface-variant container"> -->
+
+    <v-row style="width: 100%;">
+      <v-col
+        cols="12"
+        sm="12"
+        style="padding:12px 0;"
         >
+        <v-btn-toggle
+          style="margin: 20px 0; display: flex;"
+          v-model="text"
+          rounded="3"
+          color="deep-purple-accent-3"
+          group
+        >
+          <v-btn
+            class="week-btn"
+            rounded="3"
+            v-for="(week, index) in weeks" v-bind:key="index" 
+            :value=week
+            @click="clickWeek(index)"
+          >
             {{ week }}
-        </button>
-    </div>
-
-    <!-- <div>남은 수량: {{ quantity }}</div> -->
-
-    <table>
-      <thead>
-        <tr>
-          <th>시</th>
-          <th v-for="(date, index) in currentDates" v-bind:key="index">
-            <div>{{ date.format('MM/DD') }}</div>
-            <div>{{ date.get('day') }}</div>
-          </th>
-        </tr>
-      </thead>
+          </v-btn>
+        </v-btn-toggle>
+      </v-col>
+    </v-row>
+    
+    
+    <!-- <v-row> -->
+      <!-- <v-col> -->
+        <table style="width:100%;">
+          <thead>
+            <tr>
+              <th class="backslash"></th>
+              <th v-for="(date, index) in currentDates" v-bind:key="index">
+                <div>{{ days[date.get('day')] }}</div>
+                <div>{{ date.format('MM/DD') }}</div>
+              </th>
+            </tr>
+          </thead>
+          
+          <!-- v-if="tds.length" -->
+          <tbody >
+            <tr v-for="(time, rIdx) in times" v-bind:key="rIdx">
+              <td>{{ time }}:00</td>
+              <td
+                v-for="(c, cIdx) in 7" v-bind:key="cIdx" 
+                @click="clickTd(rIdx, cIdx)" 
+                v-bind:class="{disabled: disabledTds[`${rIdx},${cIdx}`], selected: selectedTds[`${rIdx},${cIdx}`]}"
+              >
+              <i class="fa fa-check" v-if="selectedTds[`${rIdx},${cIdx}`]"></i>
+            </td>
+            </tr>
+          </tbody>
+        </table>
+      <!-- </v-col> -->
+    <!-- </v-row> -->
       
-      <!-- v-if="tds.length" -->
-      <tbody >
-        <tr v-for="(time, rIdx) in times" v-bind:key="rIdx">
-          <td>{{ time }}:00</td>
-          <td
-            v-for="(c, cIdx) in 7" v-bind:key="cIdx" 
-            @click="clickTd(rIdx, cIdx)" 
-            v-bind:class="{disabled: disabledTds[`${rIdx},${cIdx}`], selected: selectedTds[`${rIdx},${cIdx}`]}"
-          ></td>
-        </tr>
-      </tbody>
-    </table>
+  <!-- </v-container> -->
 
-  </div>
+  </div>  
 
 </template>
 
@@ -47,6 +72,15 @@ export default {
   data() {
     return {
       weeks: ['이번 주', '다음 주', '2주 후', '3주 후'],
+      days: ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'],
+
+      text: '이번 주',
+      // icon: 'justify',
+      // toggle_none: null,
+      // toggle_one: 0,
+      // toggle_exclusive: 2,
+      // toggle_multiple: [0, 1, 2],
+
     }
   },
   props: [
@@ -199,7 +233,21 @@ export default {
 }
 </script>
 
+
 <style scoped>
+.reservation-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  padding: 0px;
+}
+
+.week-btn {
+  flex-grow: 1;
+}
+
+
 table {
   width: 80%;
   border-collapse: collapse;
@@ -212,28 +260,55 @@ th,
 td {
   border: 1px solid #868484;
   scroll-snap-align: start;
-  background-color: #eee;
+  /* background-color: #eee; */
   text-align: center;
-  width: 50px;
-  height: 50px;
+  /* width: 50px; */
+  height: 70px;
 }
 td:not(:first-child, .disabled):hover {
   /* border: solid 2px black; */
-  background-color: antiquewhite;
+  background-color: #f7f6f6;
+  cursor: pointer;
 }
 thead th,
 tbody th,
 tbody tr td:first-child {
-  background-color: #d7d7d7;
+  /* background-color: #d7d7d7; */
+  background-color: #eaebeb;
+
+  
 }
 
-.disabled {
+tbody tr td:first-child {
+  width: 100px
+}
+
+.backslash {
+  background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg"><line x1="0" y1="0" x2="100%" y2="100%" stroke="gray" /></svg>');
+}
+/* .disabled {
   background-color: gainsboro;
+} */
+.disabled {
+  background: linear-gradient(45deg, #dee2e6 25%, #adb5bd 0, #adb5bd 50%, #dee2e6 0, #dee2e6 75%, #adb5bd 0);
+  background-size: 5px 5px;
 }
 .selected {
-  background-color: antiquewhite;
+  /* background-color: #651fff; */
+  color: #651fff;
 }
 .selectedButton {
   background-color: rebeccapurple;
 }
+
+
+
+
+.container {
+  /* background-color: aliceblue; */
+  /* max-width: 95%; */
+}
+
+
+
 </style>

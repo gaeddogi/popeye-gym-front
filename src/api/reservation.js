@@ -19,8 +19,10 @@ function cancel(reservationId) {
 }
 
 // 예약 리스트
-function getReservations() {
-  return authRequest.get('/api/v1/reservations')
+function getReservations(status, trainerId) {
+  return authRequest.get('/api/v1/reservations',
+    {params: {status, trainerId}}
+  )
 }
 
 export { getScheduleOfTrainer, reservation, cancel, getReservations }

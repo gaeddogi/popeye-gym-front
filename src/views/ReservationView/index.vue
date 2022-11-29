@@ -1,37 +1,61 @@
 <template>
-  <div class="reservation-container">
-    <h1>예약 하기</h1>
+  <div class="container">
 
-    <div>
-      <button 
-        v-for="(trainer, index) in trainers" :key="index" 
-        @click="clickTrainer(trainer.trainerId, index)" 
-        :class="{selectedButton: currentTrainerId === trainer.trainerId}"
+
+
+    <!-- <v-container> -->
+      <v-row style="align-items: baseline; margin: 40px 0;">
+        <v-col
+          class="pl-0"
+          cols="12"
+          sm="6"
         >
-          {{ trainer.name }}
-        </button>
-    </div>
+          <v-select
+            v-model="currentTrainerId"
+            label="트레이너 선택"
+            variant="solo"
+            required
+            :items="trainers"
+            item-title="name"
+            item-value="trainerId"
+            @update:modelValue="clickTrainer"
+          ></v-select>
+        </v-col>
 
-    <div>남은 수량: {{ quantity }}</div>
-
-
-    <!-- @click-reservation="handleReservation" -->
-    <ReservationView
+        <v-col
+          class="pr-0"
+          cols="12"
+          sm="6"
+        >
+          <!-- <v-card
+            width="400"
+            text="This is content"
+          ></v-card> -->
+          <v-text-field
+            class="h-50"
+            :model-value="quantity"
+            label="남은 수량"
+            variant="underlined"
+            readonly
+          ></v-text-field>
+        </v-col>
+      </v-row>
+      
+      
+      <ReservationView
       @click-week="handleChangeWeek"
       @click-td="handleReservation"
-
+      
       :times="times"
       :currentDates="datesOfCurrentWeek"
       :scheduleDetails="scheduleDetailsOfCurrentTrainer"
       :selectedTds="selectedTds"
       :weekIdx="currentWeekIdx"
       :disabledTds="disabledTds"
-    >
-    <!-- :quantity="quantity" -->
-
-
+      >
     </ReservationView>
-
+    
+    <!-- </v-container> -->
 
   </div>
 </template>
@@ -58,15 +82,13 @@ export default {
       disabledTds: {},
       selectedTds: {},
 
-      currentTrainerIdx: 0,
       currentTrainerId: 0,
       scheduleDetailsOfCurrentTrainer: [], // [ { date: , time: , isMine: }, {}, ..]
       currentWeekIdx: 0,
       dates: [],
 
-      selectedTdsOfWeeks: {0: {}, 1: {}, 2: {}, 3: {}} // { 0: {}, 1: {}, 2: {}, 3: {} }
-      // selectedTdsOfWeeks: [{0: {}, 1: {}, 2: {}, 3: {}}]// { 0: {}, 1: {}, 2: {}, 3: {} }
-      // now: dayjs()
+      selectedTdsOfWeeks: {0: {}, 1: {}, 2: {}, 3: {}}, // { 0: {}, 1: {}, 2: {}, 3: {} }
+
     }
   },
   async created() {
@@ -75,7 +97,6 @@ export default {
     this.setDatesOfWeeks();
 
     await this.getUserPtInfo();
-    this.currentTrainerIdx = 0
     this.currentTrainerId = this.trainers[0].trainerId
     this.quantity = this.trainers[0].quantity
     this.handleChangeWeek(0)
@@ -166,11 +187,7 @@ export default {
       getScheduleOfTrainer(trainerId, startDt, endDt)
       .then(res => {
         console.log(res)
-        // {
-        //   trainerId: ,
-        //   scheduleDetails: [ 0: {dateTime: '2022-11-08T13:00:00', mine: true}, 1: {}, ...],
-        // }
-        // this.scheduleDetailsOfCurrentTrainer = res.data.scheduleDetails
+
         const trainerId = res.data.trainerId
         const details = res.data.scheduleDetails
         const selectedTds = {}
@@ -214,20 +231,14 @@ export default {
 
       // 2. 직전 주에서 선택한 td들 저장하기
     },
-    clickTrainer(trainerId, trainerIdx) {
-      console.log(trainerId)
-      
-      const trainers = this.trainers
-      const trainerName = trainers[this.currentTrainerIdx].name
-
-
-      this.currentTrainerId = trainerId
-      this.currentTrainerIdx = trainerIdx
-      this.quantity = this.trainers[trainerIdx].quantity
+    clickTrainer() {
+      this.trainers.forEach(o => {
+        if (o.trainerId === this.currentTrainerId) {
+          this.quantity = o.quantity
+        }
+      })
       this.selectedTdsOfWeeks = {0: {}, 1: {}, 2: {}, 3: {}}
       this.handleChangeWeek(0)
-   
-
     },
     handleReservation(selectedTdIdx) {
       console.log('예약을 해보자')
@@ -310,15 +321,13 @@ export default {
 </script>
 
 <style scoped>
-.reservation-container {
+/* .reservation-container {
   display: flex;
-  flex-direction: column;
-  justify-content: center;
+  width: 100%;
+} */
 
-}
 .selectedButton {
   background-color: rebeccapurple;
 }
-
 
 </style>

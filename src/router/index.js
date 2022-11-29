@@ -10,6 +10,7 @@ import RedirectView from "@/views/RedirectView.vue"
 import ReservationView from "@/views/ReservationView/index.vue"
 import ReservationListView from "@/views/ReservationListView.vue"
 import TrainerManageView from "@/views/Admin/TrainerManageView.vue"
+import UserManageView from "@/views/Admin/UserManageView.vue"
 import { getAuthFromCookie } from "@/utils/cookie"
 
 
@@ -62,13 +63,22 @@ const router = createRouter({
       component: AdminIndex,
       children: [
         {
-          path: '/admin',
+          path: '',
+          name: 'userManageView',
+          component: UserManageView,
+          meta: {
+            roles: ['ROLE_ADMIN']
+          }
+        },
+        {
+          path: 'trainer',
           name: 'trainerManageView',
           component: TrainerManageView,
           meta: {
             roles: ['ROLE_ADMIN']
           }
         }
+
       ]
     },
     // {

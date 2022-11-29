@@ -1,63 +1,115 @@
 <template>
   <div class="container">
-    <div>예약내역</div>
-    <div class="trainer-box">
+
+    <div class="sort-box">
 
       <!-- <input type="radio" class="btn-check" name="options" id="schedule" autocomplete="off">
       <label class="btn btn-secondary" for="schedule">예정</label> -->
 
-      <select class="form-select" aria-label="Default select example">
-  <option selected>Open this select menu</option>
-  <option value="1">One</option>
-  <option value="2">Two</option>
-  <option value="3">Three</option>
-</select>
+      <v-row>
+        <v-col
+          cols="12"
+          sm="6"
+        >
+          <v-select
+            v-model="trainer"
+            label="트레이너 선택"
+            variant="solo"
+            required
+            :items="trainers"
+            item-title="name"
+            item-value="id"
+            @update:modelValue="setReservations"
+          ></v-select>
+        </v-col>
 
-      <button 
-        v-for="(trainer, index) in trainers" :key="index"
-      >
+        <v-col
+          cols="12"
+          sm="6"
+        >
+          <v-select
+            v-model="status"
+            label="분류"
+            variant="solo"
+            required
+            :items="statusArr"
+            item-title="title"
+            item-value="value"
+            @update:modelValue="setReservations"
+          ></v-select>
+        </v-col>
+      </v-row>
 
-        <span>
-          {{ trainer.name }} <br/>
-          {{ trainer.type }}
-        </span>
-      </button>
-
-    </div>
-
-    <div class="status-box">
-
-      <input type="radio" class="btn-check" name="options" id="schedule" autocomplete="off">
-      <label class="btn btn-secondary" for="schedule">예정</label>
-
-      <input type="radio" class="btn-check" name="options" id="complete" autocomplete="off">
-      <label class="btn btn-secondary" for="complete">완료</label>
-
-      <input type="radio" class="btn-check" name="options" id="all" autocomplete="off">
-      <label class="btn btn-secondary" for="all">ALL</label>
-      
-      
     </div>
 
 
     <div class="list-box">
-      <div
+      <v-row
+        class="row"
         v-for="(reservation, index) in reservations" :key="index"
       >
-        <div v-if="reservation.isScheduled">예정</div>
-        <div v-else>완료</div>
-        <div>
-          <span>{{ reservation.date }}</span>
-          <span>{{ reservation.time }}</span>
-        </div>
-        <div>{{ reservation.trainerName }}</div>
-        <div
+        <v-col
+          cols="12"
+          sm="2"
+          v-if="reservation.isScheduled"
+        >
+          <v-chip
+            class="ma-2"
+            color="pink"
+            text-color="white"
+            prepend-icon="mdi-calendar-clock"
+          >
+            예정
+          </v-chip>
+        </v-col>
+        <v-col
+          cols="12"
+          sm="2"
+          v-else
+        >
+          <v-chip
+            class="ma-2"
+            text-color="white"
+            prepend-icon="mdi-calendar-check"
+          >
+            완료
+          </v-chip>
+        </v-col>
+        <v-col
+          cols="12"
+          sm="2"
+          align-self="center"
+        >
+          {{ reservation.trainerName }}
+        </v-col>
+        <v-col
+          cols="12"
+          sm="3"
+          align-self="center"
+        >
+          {{ reservation.date }}
+        </v-col>
+        <v-col
+          cols="12"
+          sm="3"
+          align-self="center"
+        >
+          {{ reservation.time }}
+        </v-col>
+        <v-col
+          cols="12"
+          sm="2"
+          align-self="center"
           v-if="reservation.isScheduled"
           @click="handleCancel(reservation.reservationId)"
         >
-          취소하기
-        </div>
-      </div>
+          <v-btn
+            color="primary"
+          >
+            취소하기
+          </v-btn>
+        </v-col>
+      </v-row>
     </div>
   </div>
 </template>
@@ -72,37 +124,20 @@ export default {
     return {
       trainers: [],
       reservations: [],
+      statusArr:[{'title': 'all', 'value': 'all'}, {'title': '예정', 'value': 's'}, {'title': '완료', 'value': 'c'}],
+
+      trainer: 'all',
+      status: 'all',
     }
   },
   created() {
     getTrainers()
-    .then(res => {
-      this.trainers = res.data      
-    })
-
-    getReservations()
-    .then(res => {
-      console.log(res)
-      const reservations = res.data
-
-      this.reservations = reservations.map(r => {
-        // var date = dayjs("2021-10-10 10:30:25", "YYYY-MM-DD HH:mm:ss");
-        const reservationId = r.reservationId
-        const trainerName = r.trainerName
-        const dateTimeArr = r.dateTime.split('T')
-        const date = dateTimeArr[0]
-        const time = dateTimeArr[1].slice(0, 5)
-
-        const dateTime = dayjs(`${date} ${time}`, "YYYY-MM-DD HH:mm:ss")
-        const now = dayjs()
-
-        const isScheduled = now.isBefore(dateTime)
-
-        return {reservationId, trainerName, isScheduled, date, time}
-
+      .then(res => {
+        console.log(res)
+        this.trainers = ['all', ...res.data]
       })
-    })
-
+    
+    this.setReservations()
   },
   methods: {
     handleCancel(reservationId) {
@@ -116,11 +151,46 @@ export default {
         const message = data.message
         alert(`${message}`)
       })
+    },
+    setReservations() {
+      const status = this.status === 'all' ? null : this.status
+      const trainerId = this.trainer === 'all' ? null : this.trainer
+
+      getReservations(status, trainerId)
+        .then(res => {
+          console.log(res)
+
+          const reservations = res.data.map(r => {
+            // var date = dayjs("2021-10-10 10:30:25", "YYYY-MM-DD HH:mm:ss");
+            const reservationId = r.reservationId
+            const trainerName = r.trainerName
+            const dateTimeArr = r.dateTime.split('T')
+            const date = dateTimeArr[0]
+            const time = dateTimeArr[1].slice(0, 5)
+
+            const dateTime = dayjs(`${date} ${time}`, "YYYY-MM-DD HH:mm:ss")
+            const now = dayjs()
+
+            const isScheduled = now.isBefore(dateTime)
+
+            return {reservationId, trainerName, isScheduled, date, time}
+
+          })
+
+          this.reservations = reservations
+        })
     }
   }
 }
 </script>
 
-<style>
-
+<style scoped>
+.sort-box {
+  margin: 40px 0;
+}
+.row {
+  /* background-color: #f7f6f6; */
+  border-bottom: 1px solid #e0e0e0;
+  /* #e0e0e0 */
+}
 </style>

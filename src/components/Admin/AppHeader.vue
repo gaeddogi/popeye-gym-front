@@ -6,8 +6,8 @@
           <div class="row">
             <div class="col-sm-4 offset-md-1 py-4">
               <ul class="list-unstyled">
-                <li><RouterLink to="/reservation/list" @click="closeCollapse">회원 관리</RouterLink></li>
-                <li><RouterLink to="/reservation" @click="closeCollapse">트레이너 관리</RouterLink></li>
+                <li><RouterLink to="/admin" @click="closeCollapse">회원 관리</RouterLink></li>
+                <li><RouterLink to="/admin/trainer" @click="closeCollapse">트레이너 관리</RouterLink></li>
                 <li><a href="javascript:;" @click="logout" v-if="isLogin">로그아웃</a></li>
               </ul>
             </div>

@@ -1,7 +1,12 @@
 <template>
-    <main class="main-container">
+    <main class="main-container" media="screen">
+      <div class="login-image"></div>
       <div class="login-form">
-        <div style="text-align:center">Popeye Gym</div>
+        <!-- <div style="text-align:center">Popeye Gym</div> -->
+        <div style="margin-left: 40px; margin-bottom: 10px">
+          <h3 data-v-4174ad9d="" class="title">더 건강한 내일을 위해</h3>
+          <p data-v-4174ad9d="" class="sub-title">운동으로 새로운 인생을 찾아보세요</p>
+        </div>
         <div>
             <a class="button button--social-login button--google" :href="'http://localhost:8080/oauth2/authorization/google?redirect_uri=http://localhost:3000/oauth2/redirect'"><i class="icon fa fa-google"></i>구글로 시작하기</a>
             <a class="button button--social-login button--naver" :href="'http://localhost:8080/oauth2/authorization/naver?redirect_uri=http://localhost:3000/oauth2/redirect'"><img class="icon naver-icon" src="/src/assets/images/naver-icon.png"/>네이버로 시작하기</a>
@@ -28,23 +33,49 @@ export default {
 </script>
 
 <style scoped>
-.main-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-grow: 1;
-    background-color: cadetblue;
-    flex-direction: column;
+@media screen and (max-width: 768px) {
+  .login-image {
+    display: none;
+  }
+  .main-container {
+    grid-template-columns: auto !important;
+    
+  }
+}
 
+/* @media screen and (min-width: 576px) {
+  .container {
+    max-width: 540px;
+  }
+  .modal-dialog {
+    max-width: 500px;
+    margin: 1.75rem auto;
+  }
+} */
+.main-container {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr;
+    height: 100%;
+    /* justify-content: center;
+    align-items: center;
+    flex-grow: 1; */
+    /* background-color: cadetblue; */
+    /* flex-direction: column; */
+
+}
+.login-image {
+  background-image: url('/src/assets/images/login.webp');
+  background-position: center;
+  background-size: cover;
 }
 .login-form {
     display: flex;
     flex-direction: column;
-    height: 300px;
-    width: 400px;
+    /* height: 300px; */
+    /* width: 400px; */
     justify-content: center;
-    background-color: #f6f2f2;
-    border: 1px solid;
+    /* background-color: #f6f2f2; */
+    /* border: 1px solid; */
     
 }
 .background-image {
@@ -129,7 +160,7 @@ export default {
   background-color: #3F85F4;
   border: 1px solid #3F85F4;
   display: flex;
-  align-content: center;
+  align-items: baseline;
 }
 /* .button--google .icon {
   border-right: 1px solid #0f66f1;
