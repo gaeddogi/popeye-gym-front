@@ -28,7 +28,7 @@ export default({ mode }) => {
       outDir: '../src/main/resources/static'
     },
     server: {
-      port: 3000,
+      port: process.env.VITE_PORT,
       proxy: {
         '/api': {
           // '/api' 로 들어오면 포트 8080(스프링 서버)로 보낸다

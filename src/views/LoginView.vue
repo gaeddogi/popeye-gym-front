@@ -8,9 +8,9 @@
           <p data-v-4174ad9d="" class="sub-title">운동으로 새로운 인생을 찾아보세요</p>
         </div>
         <div>
-            <a class="button button--social-login button--google" :href="'http://localhost:8080/oauth2/authorization/google?redirect_uri=http://localhost:3000/oauth2/redirect'"><i class="icon fa fa-google"></i>구글로 시작하기</a>
-            <a class="button button--social-login button--naver" :href="'http://localhost:8080/oauth2/authorization/naver?redirect_uri=http://localhost:3000/oauth2/redirect'"><img class="icon naver-icon" src="/src/assets/images/naver-icon.png"/>네이버로 시작하기</a>
-            <a class="button button--social-login button--kakao" :href="'http://localhost:8080/oauth2/authorization/kakao?redirect_uri=http://localhost:3000/oauth2/redirect'"><img class="icon kakao-icon" src="/src/assets/images/kakao-icon.png"/>카카오로 시작하기</a>
+            <a class="button button--social-login button--google" :href="socialLoginUrl('google')"><i class="icon fa fa-google"></i>구글로 시작하기</a>
+            <a class="button button--social-login button--naver" :href="socialLoginUrl('naver')"><img class="icon naver-icon" src="/src/assets/images/naver-icon.png"/>네이버로 시작하기</a>
+            <a class="button button--social-login button--kakao" :href="socialLoginUrl('kakao')"><img class="icon kakao-icon" src="/src/assets/images/kakao-icon.png"/>카카오로 시작하기</a>
         </div>
       </div>
         <!-- <div class="background-image"></div> -->
@@ -20,14 +20,15 @@
 <script>
 import { ref } from '@vue/reactivity'
 export default {
-  setup() {
-    const state = ref({
-      form: {
-        email: "",
-        password: ""
-      }
-    })
-    return {state}
+  methods: {
+    socialLoginUrl(type) {
+      const API_URI = process.env.VITE_API_URI
+
+      const PORT = process.env.VITE_PORT
+      const IP = process.env.VITE_IP
+
+      return `${API_URI}oauth2/authorization/${type}?redirect_uri=${IP}:${PORT}/oauth2/redirect`
+    }
   }
 }
 </script>

@@ -3,10 +3,11 @@
   "version": "0.0.0",
   "scripts": {
     "serve": "vite preview",
-    "build": "vite build",
+    "build": "vite build --mode prod",
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs --fix --ignore-path .gitignore",
     "dev": "vite",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "prod": "vite --mode prod"
   },
   "dependencies": {
     "@mdi/font": "5.9.55",
