@@ -25,6 +25,7 @@ export default({ mode }) => {
       }
     },
     build: {
+      emptyOutDir: true,
       outDir: '../src/main/resources/static'
     },
     server: {
