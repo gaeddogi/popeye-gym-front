@@ -8,12 +8,18 @@
 
   <Carousel>
     <Slide v-for="slide in 6" :key="slide">
-      <img class="carousel__item" v-if="slide === 1" src="/src/assets/images/main_1.jpg">
-      <img class="carousel__item" v-if="slide === 2" src="/src/assets/images/main_2.jpg">
-      <img class="carousel__item" v-if="slide === 3" src="/src/assets/images/main_3.jpg">
-      <img class="carousel__item" v-if="slide === 4" src="/src/assets/images/main_4.jpg">
-      <img class="carousel__item" v-if="slide === 5" src="/src/assets/images/main_5.jpg">
-      <img class="carousel__item" v-if="slide === 6" src="/src/assets/images/main_6.jpg">
+      <!-- <img class="carousel__item" v-if="slide === 1" src="/src/assets/images/main_1.jpg"> -->
+      <!-- <img class="carousel__item" v-if="slide === 2" src="/src/assets/images/main_2.jpg"> -->
+      <!-- <img class="carousel__item" v-if="slide === 3" src="/src/assets/images/main_3.jpg"> -->
+      <!-- <img class="carousel__item" v-if="slide === 4" src="/src/assets/images/main_4.jpg"> -->
+      <!-- <img class="carousel__item" v-if="slide === 5" src="/src/assets/images/main_5.jpg"> -->
+      <!-- <img class="carousel__item" v-if="slide === 6" src="/src/assets/images/main_6.jpg"> -->
+      <div v-if="slide === 1" class="carousel__item background-custom" style="background-image:url(/src/assets/images/main_1.jpg)"></div>
+      <div v-if="slide === 2" class="carousel__item background-custom" style="background-image:url(/src/assets/images/main_2.jpg)"></div>
+      <div v-if="slide === 3" class="carousel__item background-custom" style="background-image:url(/src/assets/images/main_3.jpg)"></div>
+      <div v-if="slide === 4" class="carousel__item background-custom" style="background-image:url(/src/assets/images/main_4.jpg)"></div>
+      <div v-if="slide === 5" class="carousel__item background-custom" style="background-image:url(/src/assets/images/main_5.jpg)"></div>
+      <div v-if="slide === 6" class="carousel__item background-custom" style="background-image:url(/src/assets/images/main_1.jpg)"></div>
     </Slide>
 
 
