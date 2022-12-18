@@ -9,7 +9,11 @@
     <v-container
       class="container"
     >
-      <div>트레이너 신규 등록</div>
+
+      <h4 style="margin-bottom: 30px;">트레이너 관리</h4>
+      
+      <div>신규 등록</div>
+
       <v-row>
         <v-col
           cols="12"
@@ -39,9 +43,14 @@
           ></v-select>
         </v-col>
 
-        <v-col>
+        <v-col
+          cols="12"
+          md="4"
+        >
           <v-btn
             @click="enroll"
+            style="height: 56px;"
+            color="primary"
           >
             등록하기
           </v-btn>
@@ -58,7 +67,7 @@
     color="grey-lighten-3"
     max-width="400"
   >
-    <div>트레이너 목록</div>
+    <!-- <div>트레이너 목록</div> -->
 
     <v-row>
 
@@ -72,6 +81,7 @@
           single-line
           hide-details
           @click:append-inner="searchTrainers"
+          style="height: 68px !important;"
         ></v-text-field>
       </v-card-text>
       
@@ -113,6 +123,16 @@
         </tr>
       </tbody>
     </v-table>
+
+    <div class="text-center" style="margin-top: 30px">
+      <v-pagination
+        v-model="currentPage"
+        :length="length"
+        :total-visible="6"
+        @click="clickPage"
+      ></v-pagination>
+    </div>
+
   </v-container>
 
   
@@ -140,17 +160,21 @@ export default {
       trainers: [],
       nameParam: '',
       typeParam: 'All',
+
+      currentPage: 1,
+      length: 0,
     }
   },
   created() {
-    getTrainerAll()
-      .then(({ data }) => {
-        console.log(data)
-        this.trainers = data
-      })
-      .catch(err => {
-        console.log(err)
-      })
+    this.searchTrainers()
+    // getTrainerAll()
+    //   .then(({ data }) => {
+    //     console.log(data)
+    //     this.trainers = data
+    //   })
+    //   .catch(err => {
+    //     console.log(err)
+    //   })
   },
   watch: {
     nameParam: _.debounce(function(newVal, oldVal) {
@@ -166,10 +190,14 @@ export default {
 
       const nameParam = this.nameParam
       const typeParam = this.typeParam === 'All' ? null : this.typeParam
+      const page = this.currentPage -1
 
-      getTrainerAll(nameParam, typeParam)
+      getTrainerAll(nameParam, typeParam, page)
         .then(({ data }) => {
-          this.trainers = data
+          console.log(data)
+
+          this.length = data.totalPages
+          this.trainers = data.content
         })
         .catch(err => {
           console.log(err)
@@ -200,6 +228,9 @@ export default {
     reset () {
       this.$refs.form.reset()
     },
+    clickPage() {
+      this.searchTrainers()
+    },
   },
   
 }
@@ -207,8 +238,8 @@ export default {
 
 <style scoped>
 .container {
-  background-color: aliceblue;
-  max-width: 95%;
+  /* background-color: aliceblue; */
+  max-width: 88%;
 }
 
 </style>

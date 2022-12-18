@@ -2,11 +2,11 @@ import { createRouter, createWebHistory } from "vue-router"
 import store from '@/store/store.js'
 import Index from "@/views/Index/Index.vue"
 import NoneHeaderIndex from "@/views/Index/NoneHeaderIndex.vue"
+
 import AdminIndex from "@/views/Admin/Index.vue"
 import LoginView from "@/views/LoginView.vue"
 import MainView from "@/views/MainView.vue"
 import RedirectView from "@/views/RedirectView.vue"
-// import ReservationView from "@/views/ReservationView.vue"
 import ReservationView from "@/views/ReservationView/index.vue"
 import ReservationListView from "@/views/ReservationListView.vue"
 import TrainerManageView from "@/views/Admin/TrainerManageView.vue"

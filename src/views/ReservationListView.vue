@@ -111,6 +111,16 @@
         </v-col>
       </v-row>
     </div>
+
+    <div class="text-center" style="margin-top: 40px">
+      <v-pagination
+        v-model="currentPage"
+        :length="length"
+        :total-visible="6"
+        @click="clickPage"
+      ></v-pagination>
+    </div>
+
   </div>
 </template>
 
@@ -128,6 +138,9 @@ export default {
 
       trainer: 'all',
       status: 'all',
+
+      currentPage: 1,
+      length: 0,
     }
   },
   created() {
@@ -155,12 +168,14 @@ export default {
     setReservations() {
       const status = this.status === 'all' ? null : this.status
       const trainerId = this.trainer === 'all' ? null : this.trainer
+      const page = this.currentPage -1
 
-      getReservations(status, trainerId)
+
+      getReservations(status, trainerId, page)
         .then(res => {
           console.log(res)
 
-          const reservations = res.data.map(r => {
+          const reservations = res.data.content.map(r => {
             // var date = dayjs("2021-10-10 10:30:25", "YYYY-MM-DD HH:mm:ss");
             const reservationId = r.reservationId
             const trainerName = r.trainerName
@@ -177,9 +192,13 @@ export default {
 
           })
 
+          this.length = res.data.totalPages
           this.reservations = reservations
         })
-    }
+    },
+    clickPage() {
+      this.setReservations()
+    },
   }
 }
 </script>

@@ -7,14 +7,14 @@
 
 
   <Carousel>
-    <Slide v-for="slide in 6" :key="slide">
+    <Slide v-for="slide in 4" :key="slide">
       <!-- <img class="carousel__item" v-if="slide === 1" src="/src/assets/images/main_1.jpg"> -->
       <div v-if="slide === 1" class="carousel__item background-custom backgroud-url-1"></div>
-      <div v-if="slide === 2" class="carousel__item background-custom backgroud-url-2"></div>
-      <div v-if="slide === 3" class="carousel__item background-custom backgroud-url-3"></div>
-      <div v-if="slide === 4" class="carousel__item background-custom backgroud-url-4"></div>
-      <div v-if="slide === 5" class="carousel__item background-custom backgroud-url-5"></div>
-      <div v-if="slide === 6" class="carousel__item background-custom backgroud-url-6"></div>
+      <!-- <div v-if="slide === 2" class="carousel__item background-custom backgroud-url-2"></div> -->
+      <div v-if="slide === 2" class="carousel__item background-custom backgroud-url-3"></div>
+      <div v-if="slide === 3" class="carousel__item background-custom backgroud-url-4"></div>
+      <div v-if="slide === 4" class="carousel__item background-custom backgroud-url-5"></div>
+      <!-- <div v-if="slide === 6" class="carousel__item background-custom backgroud-url-6"></div> -->
     </Slide>
 
 

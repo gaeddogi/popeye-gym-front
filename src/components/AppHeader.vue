@@ -6,12 +6,9 @@
         <div class="row">
           <div class="col-sm-4 offset-md-1 py-4">
             <ul class="list-unstyled">
-              <!-- <li><RouterLink to="/trainer">트레이너 소개</RouterLink></li> -->
               <li><RouterLink to="/reservation" @click="closeCollapse">예약하기</RouterLink></li>
               <li><RouterLink to="/reservation/list" @click="closeCollapse">예약확인</RouterLink></li>
-              <li><RouterLink to="/my" @click="closeCollapse">MY</RouterLink></li>
-              <!-- <li><RouterLink to="/login" @click="closeCollapse" v-if="!isLogin">로그인</RouterLink></li> -->
-              <li><a href="javascript:;" @click="logout" v-if="isLogin">로그아웃</a></li>
+              <!-- <li><a href="javascript:;" @click="logout" v-if="isLogin">로그아웃</a></li> -->
               <li>
                 <RouterLink 
                   v-if="getRole === 'ROLE_ADMIN'"
@@ -23,12 +20,6 @@
                     go to admin
                   </RouterLink>
               </li>
-              <!-- <li>
-                <a 
-                  @click="closeCollapse" v-if="getRole === 'ROLE_ADMIN'"
-                  :href="'http://localhost:3000/admin'"
-                  target="_blank"
-                >관리자 페이지</a></li> -->
             </ul>
           </div>
         </div>
@@ -39,17 +30,23 @@
         <RouterLink to="/" class="navbar-brand d-flex align-items-center">
           <strong style="padding-top: 5px;">Popeye Gym</strong>
         </RouterLink>
-        <button 
-          class="navbar-toggler" 
-          type="button" 
-          data-bs-toggle="collapse" 
-          data-bs-target="#navbarHeader" 
-          aria-controls="navbarHeader" 
-          aria-expanded="false"
-          aria-label="Toggle navigation"
-        >
-          <span class="navbar-toggler-icon"></span>
-        </button>
+
+        <div style="display: flex;">
+          <li v-if="!isLogin" class="ab-position"><RouterLink to="/login" class="">로그인</RouterLink></li>
+          <li v-if="isLogin" class="ab-position"><a href="javascript:;" @click="logout" >로그아웃</a></li>
+
+          <button 
+            class="navbar-toggler" 
+            type="button" 
+            data-bs-toggle="collapse" 
+            data-bs-target="#navbarHeader" 
+            aria-controls="navbarHeader" 
+            aria-expanded="false"
+            aria-label="Toggle navigation"
+          >
+            <span class="navbar-toggler-icon"></span>
+          </button>
+        </div>
       </div>
     </div>
   </header>
@@ -89,12 +86,10 @@ export default {
   // ],
   methods: {
     logout() {
-      document.getElementsByClassName('navbar-toggler')[0].click()
+      // document.getElementsByClassName('navbar-toggler')[0].click()
 
       logout()
       .then(res => {
-        console.log(router)
-        console.log('ddd')
         this.$store.commit('clearToken')
         this.$store.commit('clearUser')
         router.replace('/')
@@ -128,6 +123,7 @@ export default {
 </script>
 
 <style scoped>
+
 header {
     /* height: 130px; */
     /* display: flex; */
@@ -141,6 +137,7 @@ header {
     justify-content: center;
     font-family: 'Luckiest Guy', cursive;
 }
+
 .bd-placeholder-img {
   font-size: 1.125rem;
   text-anchor: middle;
@@ -191,7 +188,12 @@ header {
   white-space: nowrap;
   -webkit-overflow-scrolling: touch;
 }
-
+.ab-position {
+  position: relative;
+  top: 10px;
+  left: -20px;
+  font-size: 15px;
+}
 li > a {
   color: #fff;
   text-decoration: none;

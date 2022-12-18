@@ -19,9 +19,9 @@ function cancel(reservationId) {
 }
 
 // 예약 리스트
-function getReservations(status, trainerId) {
+function getReservations(status, trainerId, page) {
   return authRequest.get('/api/v1/reservations',
-    {params: {status, trainerId}}
+    {params: {status, trainerId, page}}
   )
 }
 

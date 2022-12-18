@@ -1,12 +1,12 @@
 <template>
-  <div>유저관리</div>
-
+  
   <v-container
-    class="container"
-    color="grey-lighten-3"
-    max-width="400"
+  class="container"
+  color="grey-lighten-3"
+  max-width="400"
   >
-
+  
+    <h4>회원 관리</h4>
 
     <v-card-text
       class="px-0"
@@ -123,6 +123,15 @@
       </tbody>
     </v-table>
 
+    <div class="text-center">
+      <v-pagination
+        v-model="currentPage"
+        :length="length"
+        :total-visible="6"
+        @click="clickPage"
+      ></v-pagination>
+    </div>
+
   </v-container>
 
 
@@ -151,6 +160,10 @@ export default {
       userId: 0,
       times: '',
 
+      currentPage: 1,
+      length: 0,
+
+
     }
   },
   created() {
@@ -163,7 +176,7 @@ export default {
         .then(({ data }) => {
           console.log(data)
 
-          this.trainers = data.map(o => {
+          this.trainers = data.content.map(o => {
             const title = `${o.name}_${o.type}`
             const id = o.id
 
@@ -174,10 +187,14 @@ export default {
     },
     searchUsers() {
       const emailParam = this.emailParam
+      const page = this.currentPage -1
 
-      getUserAll(emailParam)
+      getUserAll({emailParam, page})
         .then( ({ data }) => {
-          this.users = data
+          console.log(data)
+          this.length = data.totalPages
+          this.users = data.content
+
         })
     },
     clickEnrollBtn(userId) {
@@ -198,7 +215,10 @@ export default {
         .catch(err => {
           console.log(err)
         })
-    }
+    },
+    clickPage() {
+      this.searchUsers()
+    },
   },
   watch: {
     emailParam: _.debounce(function(newVal, oldVal) {
@@ -216,7 +236,7 @@ export default {
 <style scoped>
 .container {
   /* background-color: aliceblue; */
-  max-width: 95%;
+  max-width: 88%;
 }
 
 .modal {

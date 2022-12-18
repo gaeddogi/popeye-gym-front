@@ -1,7 +1,7 @@
 <template>
   
     <header>
-      <div class="collapse bg-dark" id="navbarHeader">
+      <div class="collapse bg-info" id="navbarHeader">
         <div class="container">
           <div class="row">
             <div class="col-sm-4 offset-md-1 py-4">
@@ -14,7 +14,7 @@
           </div>
         </div>
       </div>
-      <div class="navbar navbar-dark bg-dark shadow-sm">
+      <div class="navbar navbar-dark bg-info shadow-sm">
         <div class="container">
           <RouterLink to="/" class="navbar-brand d-flex align-items-center">
             <strong style="padding-top: 5px;">Popeye Gym_admin</strong>
