@@ -1,10 +1,10 @@
 function saveAuthToCookie(value) { // 토큰 값을 쿠키에 셋팅
     console.log(value)
-    document.cookie = `auth=${value}; domain=localhost; path=/;`;
+    document.cookie = `auth=${value}; path=/;`;
   }
   
   function saveUserToCookie(value) { // id 값을 쿠키에 싯팅
-    document.cookie = `user=${value}; domain=localhost; path=/;`;
+    document.cookie = `user=${value}; path=/;`;
   }
   
   function getAuthFromCookie() { // 저장된 토큰값 가져오기
@@ -23,7 +23,7 @@ function saveAuthToCookie(value) { // 토큰 값을 쿠키에 셋팅
   
   function deleteCookie(value) {
     console.log('쿠키삭제한다')
-    document.cookie = `${value}=; expires=Thu, 01 Jan 1970 00:00:01 GMT; domain=localhost; path=/;`;
+    document.cookie = `${value}=; expires=Thu, 01 Jan 1970 00:00:01 GMT; path=/;`;
   }
   
   export {

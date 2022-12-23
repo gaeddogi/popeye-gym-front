@@ -154,11 +154,11 @@ export default {
   },
   methods: {
     handleCancel(reservationId) {
-      alert(reservationId)
 
       cancel(reservationId)
       .then(res => {
         console.log(res)
+        this.$router.go(0)
       })
       .catch(({ response: {data} }) => {
         const message = data.message
