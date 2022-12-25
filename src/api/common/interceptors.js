@@ -11,7 +11,6 @@ export function setInterceptors(instance) {
     (config) => {
       // Do something before request is sent
       config.headers.Authorization = `Bearer ${store.state.token}`; // 요청시 토큰 셋팅
-      console.log(config)
       return config;
     },
     (error) => {
@@ -30,16 +29,13 @@ export function setInterceptors(instance) {
     async (error) => {
       // Any status codes that falls outside the range of 2xx cause this function to trigger
       // Do something with response error
-      console.log('axios 인터셉터 에러 잡힘')
+      // // console.log('axios 인터셉터 에러 잡힘')
       
       const { config, response } = error;
-      // console.log(error.response.data.code === 'TOKEN_EXPIRED')
 
-      console.log(error)
-      console.log(config)
       if (response.data.code === 'TOKEN_EXPIRED') {
         const accessToken = await getRefreshToken()
-        // console.log(typeof(accessToken));
+        // // console.log(typeof(accessToken));
         // if (accessToken) {
           // config.headers.Authorization = `Bearer ${store.state.token}`
           // config.headers.Authorization = `Bearer ${accessToken}`

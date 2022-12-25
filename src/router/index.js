@@ -134,11 +134,11 @@ const router = createRouter({
 })
 
 router.beforeEach(async (to, from, next) => {
-  console.log('라우터 beforeEach', from)
+  // console.log('라우터 beforeEach', from)
   const token = getAuthFromCookie()
 
   if (token) {
-    console.log('토큰을 가지고 있음')
+    // console.log('토큰을 가지고 있음')
     await store.dispatch('fetchUser')
   }
 
@@ -154,7 +154,7 @@ router.beforeEach(async (to, from, next) => {
   // if (to.meta.roles) { // 권한 필요
   //   const token = getAuthFromCookie()
   //   if (token) { 
-  //     console.log('토큰을 가지고 있음')
+  //     // console.log('토큰을 가지고 있음')
 
   //     // store.commit('setToken', token)
   //     await store.dispatch('fetchUser')
@@ -168,7 +168,7 @@ router.beforeEach(async (to, from, next) => {
   //       // })
   //     }
   //     else { // 권한 있음
-  //       console.log(from)
+  //       // console.log(from)
   //       next()
   //     }
   //   }

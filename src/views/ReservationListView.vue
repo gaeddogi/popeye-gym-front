@@ -146,7 +146,7 @@ export default {
   created() {
     getTrainers()
       .then(res => {
-        console.log(res)
+        // console.log(res)
         this.trainers = ['all', ...res.data]
       })
     
@@ -157,7 +157,7 @@ export default {
 
       cancel(reservationId)
       .then(res => {
-        console.log(res)
+        // console.log(res)
         this.$router.go(0)
       })
       .catch(({ response: {data} }) => {
@@ -173,7 +173,7 @@ export default {
 
       getReservations(status, trainerId, page)
         .then(res => {
-          console.log(res)
+          // console.log(res)
 
           const reservations = res.data.content.map(r => {
             // var date = dayjs("2021-10-10 10:30:25", "YYYY-MM-DD HH:mm:ss");

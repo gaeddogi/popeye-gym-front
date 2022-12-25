@@ -92,7 +92,7 @@ export default {
     }
   },
   async created() {
-    console.log('부모 크리에이티드');
+    // console.log('부모 크리에이티드');
 
     this.setDatesOfWeeks();
 
@@ -128,12 +128,12 @@ export default {
     getUserPtInfo() { 
       return getPtInfo()
       .then(res => {
-        console.log("gerUserInfo : ", res)
+        // console.log("gerUserInfo : ", res)
         this.trainers = res.data;
 
       })
       .catch(err => {
-        console.log(err);
+        // console.log(err);
       })
     },
     setLastTds() {
@@ -147,7 +147,7 @@ export default {
       const disabledTds = this.disabledTds // { '0,1': true, '3,3': true ...}
 
       if (firstDate > now) {
-        console.log('지난 날짜 없음')
+        // console.log('지난 날짜 없음')
         return disabledTds
       }
 
@@ -171,7 +171,7 @@ export default {
       this.disabledTds = disabledTds
     },
     handleChangeWeek(weekIdx) {
-      console.log("handleChangeWeek ", weekIdx)
+      // console.log("handleChangeWeek ", weekIdx)
 
       
 
@@ -186,7 +186,7 @@ export default {
 
       getScheduleOfTrainer(trainerId, startDt, endDt)
       .then(res => {
-        console.log(res)
+        // console.log(res)
 
         const trainerId = res.data.trainerId
         const details = res.data.scheduleDetails
@@ -203,12 +203,12 @@ export default {
           const date = detail['dateTime'].slice(0, 10)
           const time = detail['dateTime'].slice(11, 13)
 
-          console.log(date, time, mine, reservationId)
+          // console.log(date, time, mine, reservationId)
 
           const cIdx = dates.findIndex(o => o.format('YYYY-MM-DD') === date)
           const rIdx = times.findIndex(t => t == time)
 
-          console.log(rIdx, cIdx)
+          // console.log(rIdx, cIdx)
 
           if (mine) {
             selectedTds[`${rIdx},${cIdx}`] = reservationId
@@ -219,14 +219,14 @@ export default {
         }
 
         
-        console.log(disabledTds)
+        // console.log(disabledTds)
         this.selectedTds = selectedTds
         this.disabledTds = disabledTds
         
         if (weekIdx === 0) this.setLastTds()
       })
       .catch(err => {
-        console.log(err)
+        // console.log(err)
       })
 
       // 2. 직전 주에서 선택한 td들 저장하기
@@ -241,7 +241,7 @@ export default {
       this.handleChangeWeek(0)
     },
     handleReservation(selectedTdIdx) {
-      console.log('예약을 해보자')
+      // console.log('예약을 해보자')
       // Request: Long trainerId, String dateTime (YYYY-MM-DD-HH)
 
       const cIdx = selectedTdIdx.cIdx
@@ -258,11 +258,11 @@ export default {
       if (reservationId) {
         
         // 여기서 예약 취소를 한다.
-        console.log('예약취소', reservationId)
+        // console.log('예약취소', reservationId)
         
         return cancel(reservationId)
         .then(res => {
-          console.log(res)
+          // console.log(res)
 
           delete selectedTds[`${rIdx},${cIdx}`]
           ++quantity
@@ -271,7 +271,7 @@ export default {
           this.quantity = quantity
         })
         .catch(err => {
-          console.log(err)
+          // console.log(err)
         })
       }
       else {
@@ -285,11 +285,11 @@ export default {
         const dateTime = `${date}-${time}`
         const trainerId = this.currentTrainerId
 
-        console.log(date, time, dateTime)
+        // console.log(date, time, dateTime)
 
         return reservation(trainerId, dateTime)
         .then(res => {
-          console.log(res)
+          // console.log(res)
           const createdId = res.data.id
 
           selectedTds[`${rIdx},${cIdx}`] = createdId
@@ -299,7 +299,7 @@ export default {
           this.quantity = quantity
         })
         .catch(err => {
-          console.log(err)
+          // console.log(err)
         })
 
       }

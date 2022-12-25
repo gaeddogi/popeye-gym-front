@@ -95,7 +95,7 @@ export default {
     'disabledTds',
   ],
   created() {
-    console.log('자식 크리에이티드')
+    // console.log('자식 크리에이티드')
 
   },
   methods: {
@@ -103,7 +103,7 @@ export default {
       this.$emit('click-week', weekIdx)
     },
     clickTd(rIdx, cIdx) {
-      console.log(rIdx, cIdx)
+      // console.log(rIdx, cIdx)
       
       const isDisabled = this.disabledTds[`${rIdx},${cIdx}`]
 
@@ -127,7 +127,7 @@ export default {
     //   const lastTds = {} // { '0,1': true, '3,3': true ...}
 
     //   if (firstDate > now) {
-    //     console.log('지난 날짜 없음')
+    //     // console.log('지난 날짜 없음')
     //     return lastTds
     //   }
 
@@ -166,7 +166,7 @@ export default {
     //   //   return {rIdx, cIdx, mine}
     //   // })
 
-    //   console.log(scheduledTdIdxs)
+    //   // console.log(scheduledTdIdxs)
 
     //   scheduledTdIdxs.forEach(o => {
     //     // const disabled = lastedTdIdxs[o.rIdx][o.cIdx];
@@ -203,7 +203,7 @@ export default {
   //         let date = currentDates[j].format('YY-MM-DD') 
   //         let obj = {}
 
-  //         // console.log(date === nowDate)
+  //         // // console.log(date === nowDate)
   //         if (date < nowDate) {
   //           obj = {disabled: true, selected: false}
   //         }

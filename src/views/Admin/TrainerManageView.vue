@@ -169,16 +169,16 @@ export default {
     this.searchTrainers()
     // getTrainerAll()
     //   .then(({ data }) => {
-    //     console.log(data)
+    //     // console.log(data)
     //     this.trainers = data
     //   })
     //   .catch(err => {
-    //     console.log(err)
+    //     // console.log(err)
     //   })
   },
   watch: {
     nameParam: _.debounce(function(newVal, oldVal) {
-      console.log(newVal, oldVal)
+      // console.log(newVal, oldVal)
 
       this.searchTrainers()
 
@@ -194,34 +194,34 @@ export default {
 
       getTrainerAll(nameParam, typeParam, page)
         .then(({ data }) => {
-          console.log(data)
+          // console.log(data)
 
           this.length = data.totalPages
           this.trainers = data.content
         })
         .catch(err => {
-          console.log(err)
+          // console.log(err)
         })
     },
     async enroll() {
       const { valid } = await this.$refs.form.validate()
 
-      console.log(valid)
+      // console.log(valid)
       if (valid) {
         const name = this.trainerName
         const type = this.type
   
-        console.log(name, type)
+        // console.log(name, type)
 
         enroll(name, type)
         .then(res => {
-          console.log(res)
+          // console.log(res)
           this.reset()
           alert('등록되었습니다')
           
         })
         .catch(err => {
-          console.log(err)
+          // console.log(err)
         })
       }
     },

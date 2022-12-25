@@ -52,8 +52,8 @@
   
         logout()
         .then(res => {
-          console.log(router)
-          console.log('ddd')
+          // console.log(router)
+          // console.log('ddd')
           this.$store.commit('clearToken')
           this.$store.commit('clearUser')
           router.replace('/')

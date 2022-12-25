@@ -174,7 +174,7 @@ export default {
     setTrainers() {
       getTrainerAll()
         .then(({ data }) => {
-          console.log(data)
+          // console.log(data)
 
           this.trainers = data.content.map(o => {
             const title = `${o.name}_${o.type}`
@@ -191,14 +191,14 @@ export default {
 
       getUserAll({emailParam, page})
         .then( ({ data }) => {
-          console.log(data)
+          // console.log(data)
           this.length = data.totalPages
           this.users = data.content
 
         })
     },
     clickEnrollBtn(userId) {
-      console.log(userId)
+      // console.log(userId)
       this.userId = userId
     },
     handleEnroll() {
@@ -210,10 +210,10 @@ export default {
 
       enroll(userId, trainerId, times)
         .then(res => {
-          console.log(res)
+          // console.log(res)
         })
         .catch(err => {
-          console.log(err)
+          // console.log(err)
         })
     },
     clickPage() {
@@ -222,7 +222,7 @@ export default {
   },
   watch: {
     emailParam: _.debounce(function(newVal, oldVal) {
-      console.log(newVal, oldVal)
+      // console.log(newVal, oldVal)
 
       this.searchUsers()
 

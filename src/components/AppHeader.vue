@@ -75,7 +75,7 @@ export default {
   // },
   // watch: {
   //   route() {
-  //     console.log('경로가 바뀌었다.')
+  //     // console.log('경로가 바뀌었다.')
   //     // this.visible = false
       	
   //     // this.$forceUpdate()

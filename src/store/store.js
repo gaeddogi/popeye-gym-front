@@ -50,11 +50,11 @@ export default createStore({
       async fetchUser({commit}) {
         await getUser()
         .then(res => {
-          console.log(res)
+          // console.log(res)
           commit('setUser', res.data)
         })
         .catch(err => {
-          console.log(err)
+          // console.log(err)
 
           commit('clearToken')
           commit('clearUser')
